@@ -2,9 +2,14 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>Welcome Page</title>
+    <title>Page 1</title>
     <link rel="stylesheet" href="../css/bootstrap.css">
     <link rel="stylesheet" href="../css/test.css">
+
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="http://cdn.peerjs.com/0.3/peer.js"></script>
+    <script src="../js/main.js"></script>
 </head>
 <body>
     <h1 style="text-align: center;"> Welcome in the file Portal</h1>
@@ -13,43 +18,45 @@
             <div class="col-md-12">
                 <main class="l-content">
                     <div class="user others">
-                        <div id="ember296" class="ember-view peer disconnected"><!-- Sender related popups -->
-
+                        <div  class="ember-view peer disconnected">
                             <div class="avatar">
-                                <svg id="ember338" class="ember-view" width="76" height="76" viewport="0 0 76 76">
+                                <svg  class="ember-view" width="76" height="76" viewport="0 0 76 76">
                                     <path class="break" transform="translate(38, 38)"></path>
                                 </svg>
-                                <img id="ember349"
-                                     class="ember-view gravatar"
+                                <img class="ember-view gravatar"
                                      src="https://www.gravatar.com/avatar/?d=mm&amp;s=128"
                                      title="3849dc60-f416-11e4-b56e-67f8bf98723e"
                                      data-sending-progress="0"
                                      data-receiving-progress="0"
-                                     alt="192.168.0.101">
+                                     alt="Jean Renault">
+
                             </div>
 
-                            <div class="user-info">
+                            <div class="user-info" data-id="2">
 
                                 <div class="user-ip">
                                     <div class="user-connection-status disconnected"></div>
-                                    192.168.0.101
+                                    Jean Renault
                                 </div>
                             </div>
 
-                            <input id="ember362" class="ember-view ember-text-field invisible" type="file">
+                            <input  class="ember-view ember-text-field invisible" type="file">
                         </div>
                     </div>
 
                     <div class="user you">
-                        <div id="ember451" class="ember-view peer"><div class="avatar">
-                            <img class="gravatar" src="https://www.gravatar.com/avatar/?d=mm&amp;s=128" alt="192.168.0.101" title="3404e910-f3fd-11e4-b56e-67f8bf98723e">
-                        </div>
-                            <div class="user-info">
+                        <div class="ember-view peer">
+                            <div class="avatar">
+                                <img class="gravatar"
+                                     src="https://www.gravatar.com/avatar/?d=mm&amp;s=128"
+                                     alt="Rebmann Guillaume"
+                                     title="3404e910-f3fd-11e4-b56e-67f8bf98723e">
+
+                            </div>
+                            <div class="user-info" data-id="1">
                                 <div class="user-label">You</div>
                                 <div class="user-ip">
-                                    <strong>115.79.32.63</strong>
-
-                                    192.168.0.101
+                                    <strong>Rebmann Guillaume</strong>
                                 </div>
                             </div>
                         </div>
