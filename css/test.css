@@ -1,0 +1,275 @@
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section,
+summary {
+    display:block;
+}
+.circles {
+    position: relative;
+    bottom: 0;
+    left: 50%;
+    width: 1140px;
+    margin-left: -570px;
+    height: 700px;
+    z-index: -1;
+    /*transform-origin: 570px 570px;*/
+    animation: grow 1.5s ease-out;
+}
+.circles .circle {
+    stroke-width: .4;
+    fill: transparent;
+}
+
+.user {
+    user-select:none;
+}
+
+.user .peer {
+    position:absolute;
+    left:50%;
+    bottom:300px;
+    width:76px;
+    height:76px;
+    margin-left:-38px;
+    text-align:center;
+}
+
+.user .peer .avatar {
+    position:relative;
+    width:76px;
+    height:76px;
+    transition:all .2s ease-in-out;
+}
+
+.user .peer .avatar svg {
+    top:0;
+    bottom:0;
+    z-index:-1;
+    fill:rgba(0,136,204,.5);
+}
+
+.user .peer .gravatar {
+    position:absolute;
+    top:2px;
+    left:5px;
+    z-index:1;
+    border:1px solid silver;
+    box-shadow:rgba(0,0,0,.2) 0 0 3px;
+    width:66px;
+    height:66px;
+    border-radius:50%;
+    animation:shadow .8s ease-in;
+    transition:all .2s ease-in-out;
+}
+
+.user .peer .user-info {
+    position:absolute;
+    top:76px;
+    left:50%;
+    width:140px;
+    margin-left:-70px;
+}
+
+.user .peer .user-info .user-email,
+.user .peer .user-info .user-label {
+    font-weight:700;
+    color:#606060;
+    padding-bottom:.4rem;
+}
+
+.user .peer .user-info .user-email {
+    font-size:1rem;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+
+.user .peer .user-info .user-label {
+    font-size:1.4rem;
+}
+
+.user .peer .user-info .user-ip {
+    position:relative;
+    display:inline-block;
+    font-size:1rem;
+    line-height:1.2em;
+    color:gray;
+}
+
+.user .peer .user-info .user-ip>strong {
+    display:block;
+}
+
+.user .peer .user-info .user-connection-status {
+    position:absolute;
+    left:-1rem;
+    top:50%;
+    margin-top:-.3rem;
+    width:.6rem;
+    height:.6rem;
+    border-radius:50%;
+}
+
+.user .peer .user-info .user-connection-status.disconnected {
+    display:none;
+}
+
+.user .peer .user-info .user-connection-status.connecting {
+    background:rgba(0,136,204,.5);
+    animation:blink .75s infinite;
+}
+
+.user .peer .user-info .user-connection-status.connected {
+    background:rgba(164,197,64,.8);
+}
+
+.user .peer .user-info select {
+    appearance:none;
+    border:none;
+    font-size:1rem;
+    color:gray;
+    padding-right:10px;
+    outline:0;
+    background:url(/images/select-arrow.svg) 66px 50% no-repeat;
+    text-indent:.01px;
+    text-overflow:'';
+}
+
+.user .peer:nth-of-type(2) {
+    margin-left:-186px;
+    bottom:225px;
+}
+
+.user .peer:nth-of-type(3) {
+    margin-left:120px;
+    bottom:225px;
+}
+
+.user .peer:nth-of-type(4) {
+    margin-left:-186px;
+    bottom:365px;
+}
+
+.user .peer:nth-of-type(5) {
+    margin-left:120px;
+    bottom:365px;
+}
+
+.user .peer:nth-of-type(6) {
+    margin-left:-326px;
+    bottom:180px;
+}
+
+.user .peer:nth-of-type(7) {
+    margin-left:260px;
+    bottom:180px;
+}
+
+.user .peer:nth-of-type(8) {
+    margin-left:-366px;
+    bottom:320px;
+}
+
+.user .peer:nth-of-type(9) {
+    margin-left:300px;
+    bottom:320px;
+}
+
+.user .peer:nth-of-type(10) {
+    margin-left:-436px;
+    bottom:90px;
+}
+
+.user .peer:nth-of-type(11) {
+    margin-left:370px;
+    bottom:90px;
+}
+
+.user .peer:nth-of-type(12) {
+    bottom:400px;
+}
+
+.user .peer:nth-of-type(13) {
+    margin-left:-236px;
+    bottom:90px;
+}
+
+.user .peer:nth-of-type(14) {
+    margin-left:170px;
+    bottom:90px;
+}
+
+.user.you .peer {
+    bottom:90px;
+}
+
+.user.others .peer .avatar {
+    cursor:pointer;
+}
+
+.user.others .peer .avatar.hover,
+.user.others .peer .avatar:hover {
+    transform:scale(1.1,1.1);
+}
+
+.user.others .peer .avatar.hover .gravatar,
+.user.others .peer .avatar:hover .gravatar {
+    border-color:rgba(0,136,204,.8);
+}
+
+.user.others .peer .avatar::after {
+    opacity:0;
+    position:absolute;
+    pointer-events:none;
+    top:5px;
+    left:5px;
+    z-index:100;
+    content:"L";
+    color:#fff;
+    font-size:3rem;
+    font-weight:700;
+    background:rgba(164,197,64,.8);
+    border:1px solid #fff;
+    transform:scaleX(-1) rotate(-45deg);
+    display:inline-block;
+    width:66px;
+    height:66px;
+    line-height:66px;
+    text-align:center;
+    vertical-align:middle;
+    border-radius:50%;
+    transition:opacity .3s;
+}
+
+.user.others .peer .avatar.transfer-completed::after {
+    opacity:1;
+}
+
+@keyframes blink {
+    0% {
+        opacity:1;
+    }
+    50% {
+        opacity:0;
+    }
+}
+
+@keyframes shadow {
+    0% {
+        opacity:0;
+    }
+    50% {
+        opacity:1;
+        box-shadow:rgba(0,0,0,.3) 0 0 15px;
+    }
+}
+
