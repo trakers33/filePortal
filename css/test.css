@@ -216,10 +216,7 @@ summary {
     cursor:pointer;
 }
 
-.user.others .peer .avatar.hover,
-.user.others .peer .avatar:hover {
-    transform:scale(1.1,1.1);
-}
+
 
 .user.others .peer .avatar.hover .gravatar,
 .user.others .peer .avatar:hover .gravatar {
