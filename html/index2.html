@@ -8,7 +8,8 @@
 
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
-    <script src="http://cdn.peerjs.com/0.3/peer.js"></script>
+    <script src="../js/peer.js"></script>
+    <script src="../js/fileSaver.js"></script>
     <script src="../js/main2.js"></script>
 </head>
 <body>
@@ -28,7 +29,7 @@
                                  title="3849dc60-f416-11e4-b56e-67f8bf98723e"
                                  data-sending-progress="0"
                                  data-receiving-progress="0"
-                                 alt="Rebmann Guillaume">
+                                 alt="Rebmann Guillaume"></img>
 
                         </div>
 
@@ -40,7 +41,7 @@
                             </div>
                         </div>
 
-                        <input  class="ember-view ember-text-field invisible" type="file">
+                        <input  class="fileSelector ember-text-field invisible" type="file"></input>
                     </div>
                 </div>
 
@@ -50,7 +51,7 @@
                             <img class="gravatar"
                                  src="https://www.gravatar.com/avatar/?d=mm&amp;s=128"
                                  alt="Jean Renault"
-                                 title="3404e910-f3fd-11e4-b56e-67f8bf98723e">
+                                 title="3404e910-f3fd-11e4-b56e-67f8bf98723e"></img>
 
                         </div>
                         <div class="user-info" data-id="2">
@@ -71,7 +72,7 @@
                 <circle class="circle" cx="570" cy="570" r="500" stroke="rgba(160,160,160,.5)"></circle>
             </svg>
             <div style="display:none">
-                <div id="acceptMessage">Do you accept the connection ?</br> <button type='button' class='button cancel' >No</button><button type='button' class='button accept' >Yes</button></div>
+                <div id="acceptMessage">Do you accept the connection ?<br></br> <button type='button' class='button cancel' >No</button><button type='button' class='button accept' >Yes</button></div>
 
             </div>
         </div>

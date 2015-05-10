@@ -7,15 +7,39 @@ var app = {other:{},peer:null,trade:{}};
 // OTHER
 app.other.onClick = function(){
     $(".others .avatar img").on('click',function(){
-        // $(this).closest(".others").find("input").click();
         var object = $(this).closest(".others");
-        app.sender(object.find(".user-info").data('id'));
+        var id = object.find(".user-info").data('id');
+        if(!app.trade[id]){
+
+            object.find("input").click();
+        }else{
+            console.log(app.trade[id]);
+            console.log("Sorry we can't re-open a peer connection with %d because it's already in share mode",id);
+        }
 
     })
+}
+// Event when a file is selected and ready to be share
+app.initInput = function(){
+    var eventFile = new Event('fileSelected');
+    $('body').on('fileSelected','.fileSelector',function(e,data){
+        console.log(e); // Event
+        console.log(data); // EventData
+        app.sender(data);
+    });
 }
 
 app.other.init = function(callback){
     app.other.onClick();
+    $('body').on("change",'.fileSelector',function(){
+        var object = $(this).closest(".others");
+        var id = object.find(".user-info").data('id');
+        var file = $(this)[0].files[0];
+        object.find('.fileSelector').trigger("fileSelected",{id:id,file:file});
+        console.log("Id: %d fileName: %s fileSize %d",id,file.name,file.size);
+
+
+    });
 
     $("body").on("click",".cancel",function(){
         console.log("Clicked");
@@ -28,36 +52,41 @@ app.other.init = function(callback){
         var id = $(this).closest(".others").attr("id");
         console.log(id);
     });
-    app.peer = new Peer($('.you').find(".user-info").data("id"), {key: '4hao8pkyrsve7b9',debug:3});
+
+    app.initInput();
+    app.peer = new Peer($('.you').find(".user-info").data("id"), {host: 'fileportal.herokuapp.com',debug:3});
     return callback();
 }
 
+
+
 // Sender
-app.sender = function(id){
+app.sender = function(data){
     var peer = app.peer;
+    var id = data.id;
     var conn = peer.connect(id);
-    app.trade[id] = null;
+    var file = data.file; // File information
+    app.trade[id] = true;
 
     _close = function(){
-      conn.close();
+        delete app.trade[id];
+        conn.send({action:"close",type:"sender"});
+        conn.close();
     }
-    _init = function(){
+    _init = function(name,size){
         console.log("SEND: INIT");
-        conn.send({message:"initialisation to send a file",action:"init",type:"sender"});
+        conn.send({action:"init",data:{name:name,size:size},type:"sender"});
     }
     _accept = function(e){
         if(e == "yes"){
             console.log("SEND: fileSending");
-            conn.send({message:"sent the file",action:"fileSending",type:"sender"});
+            conn.send({message:"sent the file",action:"fileSending",data:file,type:"sender"});
         }else{
-            console.log("SEND: NOTHING because no accept");
+            console.log("SEND: NOTHING because not accepted");
+            _close();
         }
 
 
-    }
-    _receivedFile = function(){
-        console.log("SEND: receivedFILE");
-        conn.send({message:"receivedFile",action:"close",type:"sender"});
     }
 
 
@@ -68,8 +97,8 @@ app.sender = function(id){
                 console.log("RECEIVED: accept");
                 _accept(data.message);
             }else if(data.action == "receivedFile"){
-                console.log("RECEIVED: receivedFile")
-                _receivedFile();
+                console.log("RECEIVED: receivedFile");
+                _close();
             }else if(data.action == "close"){
                 console.log("RECEIVED: close")
                 _close();
@@ -77,7 +106,7 @@ app.sender = function(id){
         });
 
         // Send message
-        _init();
+        _init(file.name,file.size);
 
     });
 
@@ -87,6 +116,8 @@ app.receiver = function(conn){
     var peer = app.peer;
     var conn = conn;
     var id = conn.peer;
+    var fileName = null;
+    var fileSize = null;
     app.trade[id] = null;
 
     _close = function(){
@@ -99,6 +130,7 @@ app.receiver = function(conn){
             placement:"top",
             html:true,
             content:$('#acceptMessage').html()});
+
         obj.popover("show");
         console.log("ACCEPT CLICk")
         $("#"+id).on("click",".cancel",function(){
@@ -116,10 +148,16 @@ app.receiver = function(conn){
         });
     }
 
-    _computeFile = function(){
+    _computeFile = function(file){
         // Do all the stuff for the file
         console.log("SEND: file received")
-        conn.send({message:"File received",action:"receivedFile",type:"receiver"})
+
+        var dataView = new Uint8Array(file);
+        var dataBlob = new Blob([dataView]);
+        console.log(file.name);
+        console.log(dataBlob);
+        saveAs(dataBlob, fileName);
+        conn.send({action:"receivedFile",type:"receiver"})
     }
 
     conn.on('open', function() {
@@ -127,10 +165,12 @@ app.receiver = function(conn){
         conn.on('data', function(data) {
             if(data.action == "init"){
                 console.log("RECEIVED: init")
-                _accept();
+                fileName = data.data.name;
+                fileSize = data.data.size;
+                    _accept();
             }else if(data.action == "fileSending"){
                 console.log("RECEIVED: fileSending")
-                _computeFile();
+                _computeFile(data.data);
             }else if(data.action == "close"){
                 console.log("RECEIVED: close")
                 _close();
