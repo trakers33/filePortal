@@ -6,8 +6,8 @@ var app = {other:{},peer:null,trade:{}};
 
 // OTHER
 app.other.onClick = function(){
-    $(".others .avatar img").on('click',function(){
-        var object = $(this).closest(".others");
+    $("body").on('click',".others .avatar img",function(){
+        var object = $(this).closest(".connected");
         var id = object.find(".user-info").data('id');
         if(!app.trade[id]){
 
@@ -32,7 +32,7 @@ app.initInput = function(){
 app.other.init = function(callback){
     app.other.onClick();
     $('body').on("change",'.fileSelector',function(){
-        var object = $(this).closest(".others");
+        var object = $(this).closest(".connected");
         var id = object.find(".user-info").data('id');
         var file = $(this)[0].files[0];
         object.find('.fileSelector').trigger("fileSelected",{id:id,file:file});
@@ -43,14 +43,15 @@ app.other.init = function(callback){
 
     $("body").on("click",".cancel",function(){
         console.log("Clicked");
-        var id = $(this).closest(".others").attr("id");
+        var id =$(this).data('id');
         console.log(id);
+        $("#"+id).trigger("refuseFile");
 
     });
     $("body").on("click",".accept",function(){
         console.log("Clicked");
-        var id = $(this).closest(".others").attr("id");
-        console.log(id);
+        var id = $(this).data('id');
+        $("#"+id).trigger("acceptFile");
     });
 
     app.initInput();
@@ -58,7 +59,10 @@ app.other.init = function(callback){
     return callback();
 }
 
-
+app.addUser = function(id,name){
+    var content = '<div class=" peer connected" id="'+id+'"><div class="avatar"><svg class="ember-view" width="76" height="76" viewport="0 0 76 76"> <path class="break" transform="translate(38, 38)"></path> </svg> <img class="ember-view gravatar" src="https://www.gravatar.com/avatar/?d=mm&amp;s=128" alt="'+name+'" data-sending-progress="0" data-receiving-progress="0"> </div> <div class="user-info" data-id="'+id+'"> <div class="user-ip"> <div class="user-connection-status disconnected"></div>'+name+'</div> </div> <input class="ember-view ember-text-field invisible" type="file"> </div>';
+    $(".others").append(content);
+}
 
 // Sender
 app.sender = function(data){
@@ -119,33 +123,38 @@ app.receiver = function(conn){
     var fileName = null;
     var fileSize = null;
     app.trade[id] = null;
+    var eventAccept = new Event("acceptFile");
+    var eventRefuse = new Event("refuseFile");
+    // Listening to the AcceptEvent
+    $('#'+id).on('acceptFile',function(){
+        console.log("ACCEPT");
+        $("#"+id).popover("destroy");
+        console.log("SEND: yes")
+        conn.send({message:"yes",action:"accept",type:"receiver"})
+        $('#'+id).off();
+    })
+    // Listening to the RefuseEvent
+    $('#'+id).on('refuseEvent',function(){
+        console.log("CANCEL")
+        $("#"+id).popover("destroy");
+        console.log("SEND: no")
+        conn.send({message:"no",action:"accept",type:"receiver"})
+        $('#'+id).off();
+    })
 
     _close = function(){
       conn.close();
     }
 
     _accept = function(){
-        var obj = $("#"+id+" .peer").popover({
+        var obj = $("#"+id).popover({
             title:"File Transfert",
             placement:"top",
             html:true,
-            content:$('#acceptMessage').html()});
+            content:"Do you accept the connection ?</br> <button type='button' class='button cancel' data-id='"+id+"' >No</button><button type='button' class='button accept' data-id='"+id+"'>Yes</button>"
+        });
 
         obj.popover("show");
-        console.log("ACCEPT CLICk")
-        $("#"+id).on("click",".cancel",function(){
-            console.log("CANCEL")
-            obj.popover("destroy");
-            console.log("SEND: no")
-            conn.send({message:"no",action:"accept",type:"receiver"})
-        });
-
-        $("#"+id).on("click",".accept",function(){
-            console.log("ACCEPT");
-            obj.popover("destroy");
-            console.log("SEND: yes")
-            conn.send({message:"yes",action:"accept",type:"receiver"})
-        });
     }
 
     _computeFile = function(file){
@@ -157,22 +166,22 @@ app.receiver = function(conn){
         console.log(file.name);
         console.log(dataBlob);
         saveAs(dataBlob, fileName);
-        conn.send({action:"receivedFile",type:"receiver"})
+        conn.send({action:"receivedFile",type:"receiver"});
     }
 
     conn.on('open', function() {
         // Receive messages
         conn.on('data', function(data) {
             if(data.action == "init"){
-                console.log("RECEIVED: init")
+                console.log("RECEIVED: init");
                 fileName = data.data.name;
                 fileSize = data.data.size;
                     _accept();
             }else if(data.action == "fileSending"){
-                console.log("RECEIVED: fileSending")
+                console.log("RECEIVED: fileSending");
                 _computeFile(data.data);
             }else if(data.action == "close"){
-                console.log("RECEIVED: close")
+                console.log("RECEIVED: close");
                 _close();
             }
         });
@@ -183,7 +192,7 @@ app.receiver = function(conn){
 app.connection = function(){
     var peer = app.peer;
     peer.on('connection', function(conn) {
-        console.log("CONNECTION: new")
+        console.log("CONNECTION: new");
         app.receiver(conn);
 
     });
@@ -198,6 +207,8 @@ jQuery(document).ready(function($)
 
     app.other.init(function(){
         app.connection();
+        // For testing
+        //app.addUser(5,"guigui");
     });
 
 
